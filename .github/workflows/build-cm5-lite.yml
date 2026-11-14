@@ -54,6 +54,11 @@ jobs:
         run: |
           make -j"$(nproc)" download
 
+      - name: Probe host tools (verbose, fail fast)
+        run: |
+          set -o pipefail
+          make -j1 V=s tools/elfutils/compile 2>&1 | tail -400
+
       - name: Build host tools
         run: |
           set -o pipefail
