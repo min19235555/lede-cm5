@@ -1,0 +1,81 @@
+#!/bin/sh
+# Radxa CM5 Lite: MT7922 (WiFi 6) has no OTP MAC and OpenWrt ships no default
+# wireless config for it, so the radio stays down until it is configured by
+# hand. Create a working AP preset on first boot.
+
+[ -d /sys/class/ieee80211 ] || exit 0
+
+[ -s /etc/config/wireless ] || wifi config >/dev/null 2>&1
+[ -s /etc/config/wireless ] || exit 0
+
+# Base MAC from the SoC serial, same scheme as the wired ports.
+sn=$(tr -d '\000' < /proc/device-tree/serial-number 2>/dev/null | tr 'A-Z' 'a-z')
+case "$sn" in *[!0-9a-f]*) sn="" ;; esac
+[ ${#sn} -ge 10 ] || sn="0badc0de00"
+h=${sn#"${sn%??????????}"}
+base="02:$(echo "$h" | sed 's/../&:/g; s/:$//')"
+
+inc_mac() {
+	local p=${1##*:} n
+	n=$((0x$p + $2))
+	printf '%s:%02x' "${1%:*}" $((n % 256))
+}
+
+suffix=$(echo "$h" | tail -c 5)
+ssid="ImmortalWrt-$suffix"
+key="12345678"
+
+i=0
+while radio=$(uci -q get "wireless.@wifi-device[$i]"); do
+	[ -n "$radio" ] || break
+	band=$(uci -q get "wireless.$radio.band")
+	hwmode=$(uci -q get "wireless.$radio.hwmode")
+	[ -n "$band" ] || {
+		case "$hwmode" in
+			11a) band="5g" ;;
+			11g) band="2g" ;;
+		esac
+	}
+	uci set "wireless.$radio.disabled=0"
+	uci set "wireless.$radio.country=CN"
+	uci set "wireless.$radio.macaddr=$(inc_mac "$base" $((0x10 + i)))"
+	case "$band" in
+		5g|6g)
+			# MT7922 (AX5400): 2x2 HE160 -> 4804 Mbps on 5 GHz
+			uci set "wireless.$radio.band=$band"
+			uci set "wireless.$radio.htmode=HE160"
+			# 160 MHz needs a fixed, non-DFS channel to come up reliably
+			uci set "wireless.$radio.channel=36"
+			;;
+		2g)
+			uci set "wireless.$radio.band=2g"
+			uci set "wireless.$radio.htmode=HE40"
+			uci set "wireless.$radio.channel=auto"
+			;;
+		*)
+			uci set "wireless.$radio.channel=auto"
+			;;
+	esac
+	i=$((i + 1))
+done
+
+# Only create default AP interfaces when the config has none at all.
+if ! uci -q get "wireless.@wifi-iface[0]" >/dev/null 2>&1; then
+	i=0
+	while radio=$(uci -q get "wireless.@wifi-device[$i]"); do
+		[ -n "$radio" ] || break
+		uci set "wireless.cm5ap$i=wifi-iface"
+		uci set "wireless.cm5ap$i.device=$radio"
+		uci set "wireless.cm5ap$i.mode=ap"
+		uci set "wireless.cm5ap$i.network=lan"
+		uci set "wireless.cm5ap$i.ssid=$ssid"
+		uci set "wireless.cm5ap$i.encryption=psk2"
+		uci set "wireless.cm5ap$i.key=$key"
+		i=$((i + 1))
+	done
+fi
+
+uci -q commit wireless
+wifi reload >/dev/null 2>&1
+
+exit 0

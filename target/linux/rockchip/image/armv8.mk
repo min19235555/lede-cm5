@@ -1,938 +1,682 @@
 # SPDX-License-Identifier: GPL-2.0-only
 #
-# Copyright (C) 2020 Tobias Maedel
+# Copyright (C) 2020 Sarah Maedel
 
 define Device/rk3308
   SOC := rk3308
   KERNEL_LOADADDR := 0x03000000
+  BOOT_FLOW := pine64-img
 endef
+
+define Device/rk3328
+  SOC := rk3328
+  KERNEL_LOADADDR := 0x03200000
+  BOOT_FLOW := pine64-bin
+endef
+
+define Device/rk3399
+  SOC := rk3399
+  KERNEL_LOADADDR := 0x03200000
+  BOOT_FLOW := pine64-bin
+endef
+
+define Device/rk3528
+  SOC := rk3528
+  KERNEL_LOADADDR := 0x03000000
+  BOOT_FLOW := pine64-img
+endef
+
+define Device/rk3566
+  SOC := rk3566
+  KERNEL_LOADADDR := 0x03000000
+  BOOT_FLOW := pine64-img
+endef
+
+define Device/rk3568
+  SOC := rk3568
+  KERNEL_LOADADDR := 0x03000000
+  BOOT_FLOW := pine64-img
+endef
+
+define Device/rk3576
+  SOC := rk3576
+  KERNEL_LOADADDR := 0x43000000
+  BOOT_FLOW := pine64-img
+  DEVICE_PACKAGES := kmod-phy-rockchip-usbdp
+endef
+
+define Device/rk3582
+  SOC := rk3582
+  KERNEL_LOADADDR := 0x03000000
+  BOOT_FLOW := pine64-img
+  DEVICE_PACKAGES := kmod-phy-rockchip-usbdp
+endef
+
+define Device/rk3588
+  SOC := rk3588
+  KERNEL_LOADADDR := 0x03000000
+  BOOT_FLOW := pine64-img
+  DEVICE_PACKAGES := kmod-phy-rockchip-usbdp
+endef
+
+define Device/rk3588s
+  SOC := rk3588s
+  KERNEL_LOADADDR := 0x03000000
+  BOOT_FLOW := pine64-img
+  DEVICE_PACKAGES := kmod-phy-rockchip-usbdp
+endef
+
+define Device/IfnameMigration
+  DEVICE_COMPAT_VERSION := 1.1
+  DEVICE_COMPAT_MESSAGE := Network interface names have been changed
+endef
+
+define Device/9tripod_x3568-v4
+  $(Device/rk3568)
+  DEVICE_VENDOR := 9Tripod
+  DEVICE_MODEL := X3568
+  DEVICE_VARIANT := v4
+  DEVICE_DTS := rk3568-9tripod-x3568-v4
+  SUPPORTED_DEVICES := ninetripod,x3568-v4
+  DEVICE_PACKAGES := blkdiscard block-mount kmod-ata-ahci-dwc kmod-nvme kmod-hwmon-pwmfan \
+	kmod-input-adc-keys kmod-rtc-pcf8563 kmod-brcmfmac wpad-openssl \
+	brcmfmac-firmware-43752-sdio brcmfmac-nvram-43752-sdio
+  UBOOT_DEVICE_NAME := 9tripod-x3568-v4-rk3568
+endef
+TARGET_DEVICES += 9tripod_x3568-v4
+
+define Device/ariaboard_photonicat
+  $(Device/rk3568)
+  DEVICE_VENDOR := Ariaboard
+  DEVICE_MODEL := Photonicat
+  DEVICE_PACKAGES := pcat-mgr kmod-ath10k-sdio ath10k-firmware-qca9377-sdio wpad-openssl \
+	kmod-usb-net-cdc-mbim kmod-usb-net-qmi-wwan kmod-usb-serial-option uqmi
+endef
+TARGET_DEVICES += ariaboard_photonicat
+
+define Device/ariaboard_photonicat2
+  $(Device/rk3576)
+  DEVICE_VENDOR := Ariaboard
+  DEVICE_MODEL := Photonicat2
+  DEVICE_PACKAGES += kmod-photonicat-pm kmod-aic8800-usb wpad-openssl kmod-usb-net-cdc-mbim \
+	kmod-usb-net-qmi-wwan kmod-usb-serial-option uqmi
+endef
+TARGET_DEVICES += ariaboard_photonicat2
+
+define Device/armsom_sige3
+  $(Device/rk3568)
+  DEVICE_VENDOR := ArmSoM
+  DEVICE_MODEL := Sige3
+  DEVICE_DTS := rk3568-armsom-sige3
+  DEVICE_PACKAGES := kmod-brcmfmac kmod-r8125 wpad-openssl \
+	brcmfmac-firmware-43752-sdio brcmfmac-nvram-43752-sdio
+endef
+TARGET_DEVICES += armsom_sige3
+
+define Device/armsom_sige7
+  $(Device/rk3588)
+  DEVICE_VENDOR := ArmSoM
+  DEVICE_MODEL := Sige7
+  DEVICE_ALT0_VENDOR := Bananapi
+  DEVICE_ALT0_MODEL := BPi-M7
+  DEVICE_DTS := rk3588-armsom-sige7
+  DEVICE_PACKAGES += kmod-brcmfmac kmod-r8125 wpad-openssl \
+	brcmfmac-firmware-43752-pcie brcmfmac-nvram-43752-pcie
+endef
+TARGET_DEVICES += armsom_sige7
+
+define Device/cyber_cyber3588-aib
+  $(Device/rk3588)
+  DEVICE_VENDOR := Cyber
+  DEVICE_MODEL := 3588 AIB
+  DEVICE_PACKAGES += kmod-ata-ahci-dwc kmod-r8125 kmod-mt7921e wpad-openssl \
+	kmod-hwmon-pwmfan kmod-usb-net-cdc-mbim kmod-usb-net-qmi-wwan \
+	kmod-usb-serial-option uqmi
+endef
+TARGET_DEVICES += cyber_cyber3588-aib
+
+define Device/ezpro_mrkaio-m68s
+  $(Device/rk3568)
+  DEVICE_VENDOR := EZPRO
+  DEVICE_MODEL := Mrkaio M68S
+  DEVICE_PACKAGES := kmod-ata-ahci-dwc
+endef
+TARGET_DEVICES += ezpro_mrkaio-m68s
+
+define Device/firefly_roc-rk3328-cc
+  $(Device/rk3328)
+  DEVICE_VENDOR := Firefly
+  DEVICE_MODEL := ROC-RK3328-CC
+  DEVICE_DTS := rk3328-roc-cc
+  UBOOT_DEVICE_NAME := roc-cc-rk3328
+endef
+TARGET_DEVICES += firefly_roc-rk3328-cc
+
+define Device/firefly_roc-rk3568-pc
+  $(Device/rk3568)
+  DEVICE_VENDOR := Firefly
+  DEVICE_MODEL := Station P2
+  DEVICE_ALT0_VENDOR := Firefly
+  DEVICE_ALT0_MODEL := ROC-RK3568-PC
+  DEVICE_DTS := rk3568-roc-pc
+  SUPPORTED_DEVICES := firefly,rk3568-roc-pc
+  UBOOT_DEVICE_NAME := roc-pc-rk3568
+  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-brcmfmac wpad-openssl \
+	brcmfmac-firmware-43752-sdio brcmfmac-nvram-43752-sdio
+endef
+TARGET_DEVICES += firefly_roc-rk3568-pc
+
+define Device/friendlyarm_nanopc-t4
+  $(Device/rk3399)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPC T4
+  DEVICE_PACKAGES := kmod-brcmfmac wpad-openssl \
+	brcmfmac-firmware-4356-sdio brcmfmac-nvram-4356-sdio \
+	kmod-button-hotplug kmod-input-adc-keys
+endef
+TARGET_DEVICES += friendlyarm_nanopc-t4
+
+define Device/friendlyarm_nanopc-t6
+  $(Device/rk3588)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPC T6
+  DEVICE_PACKAGES += kmod-button-hotplug kmod-input-adc-keys kmod-r8125
+endef
+TARGET_DEVICES += friendlyarm_nanopc-t6
+
+define Device/friendlyarm_nanopi-m5
+  $(Device/rk3576)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi M5
+  DEVICE_PACKAGES += blkdiscard block-mount kmod-button-hotplug kmod-input-adc-keys kmod-nvme
+endef
+TARGET_DEVICES += friendlyarm_nanopi-m5
+
+define Device/friendlyarm_nanopi-r2c
+  $(Device/rk3328)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R2C
+  DEVICE_PACKAGES := kmod-usb-net-rtl8152
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r2c
+
+define Device/friendlyarm_nanopi-r2c-plus
+  $(Device/rk3328)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R2C Plus
+  DEVICE_PACKAGES := kmod-usb-net-rtl8152
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r2c-plus
+
+define Device/friendlyarm_nanopi-r2s
+  $(Device/rk3328)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R2S
+  DEVICE_PACKAGES := kmod-usb-net-rtl8152
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r2s
+
+define Device/friendlyarm_nanopi-r2s-plus
+  $(Device/rk3328)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R2S Plus
+  DEVICE_PACKAGES := kmod-usb-net-rtl8152
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r2s-plus
+
+define Device/friendlyarm_nanopi-r3s
+  $(Device/rk3566)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R3S
+  DEVICE_PACKAGES := kmod-r8169
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r3s
+
+define Device/friendlyarm_nanopi-r4s
+  $(Device/rk3399)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R4S
+  DEVICE_PACKAGES := kmod-r8169
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r4s
+
+define Device/friendlyarm_nanopi-r4se
+  $(Device/rk3399)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R4SE
+  DEVICE_PACKAGES := kmod-r8169
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r4se
+
+define Device/friendlyarm_nanopi-r4s-enterprise
+  $(Device/rk3399)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R4S Enterprise Edition
+  UBOOT_DEVICE_NAME := nanopi-r4s-rk3399
+  DEVICE_PACKAGES := kmod-r8169
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r4s-enterprise
+
+define Device/friendlyarm_nanopi-r5c
+  $(Device/rk3568)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R5C
+  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys kmod-r8125 kmod-rtw88-8822ce rtl8822ce-firmware wpad-openssl
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r5c
+
+define Device/friendlyarm_nanopi-r5s
+  $(Device/rk3568)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R5S
+  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys kmod-r8125
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r5s
+
+define Device/friendlyarm_nanopi-r6c
+  $(Device/rk3588s)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R6C
+  DEVICE_PACKAGES += kmod-button-hotplug kmod-input-adc-keys kmod-r8125
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r6c
+
+define Device/friendlyarm_nanopi-r6s
+  $(Device/rk3588s)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R6S
+  DEVICE_PACKAGES += kmod-button-hotplug kmod-input-adc-keys kmod-r8125
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r6s
+
+define Device/friendlyarm_nanopi-r76s
+  $(Device/rk3576)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi R76S
+  DEVICE_PACKAGES += kmod-r8125 kmod-rtw88-8822cs wpad-openssl
+endef
+TARGET_DEVICES += friendlyarm_nanopi-r76s
+
+define Device/friendlyarm_nanopi-zero2
+  $(Device/rk3528)
+  DEVICE_VENDOR := FriendlyARM
+  DEVICE_MODEL := NanoPi Zero2
+  DEVICE_PACKAGES := kmod-rtw88-8822ce wpad-openssl
+endef
+TARGET_DEVICES += friendlyarm_nanopi-zero2
+
+define Device/graperain_g3568-v2
+  $(Device/rk3568)
+  DEVICE_VENDOR := Graperain
+  DEVICE_MODEL := G3568
+  DEVICE_VARIANT := v2
+  DEVICE_DTS := rk3568-graperain-g3568-v2
+  DEVICE_PACKAGES := blkdiscard block-mount kmod-ata-ahci-dwc kmod-nvme kmod-hwmon-pwmfan \
+	kmod-input-adc-keys kmod-rtc-pcf8563 kmod-brcmfmac wpad-openssl \
+	brcmfmac-firmware-4356-sdio brcmfmac-nvram-4356-sdio
+  UBOOT_DEVICE_NAME := graperain-g3568-v2-rk3568
+endef
+TARGET_DEVICES += graperain_g3568-v2
+
+define Device/huake_guangmiao-g4c
+  $(Device/rk3399)
+  DEVICE_VENDOR := Huake-Cloud
+  DEVICE_MODEL := GuangMiao G4C
+  DEVICE_PACKAGES := kmod-r8169
+endef
+TARGET_DEVICES += huake_guangmiao-g4c
+
+define Device/linkease_easepi-r1
+  $(Device/rk3568)
+  DEVICE_VENDOR := LinkEase
+  DEVICE_MODEL := EasePi R1
+  DEVICE_PACKAGES := blkdiscard block-mount kmod-button-hotplug kmod-input-adc-keys kmod-nvme kmod-r8125
+endef
+TARGET_DEVICES += linkease_easepi-r1
+
+define Device/lunzn_fastrhino-r66s
+  $(Device/rk3568)
+  DEVICE_VENDOR := Lunzn
+  DEVICE_MODEL := FastRhino R66S
+  DEVICE_PACKAGES := kmod-r8125
+endef
+TARGET_DEVICES += lunzn_fastrhino-r66s
+
+define Device/lunzn_fastrhino-r68s
+  $(Device/rk3568)
+  $(Device/IfnameMigration)
+  DEVICE_VENDOR := Lunzn
+  DEVICE_MODEL := FastRhino R68S
+  DEVICE_PACKAGES := kmod-r8125
+endef
+TARGET_DEVICES += lunzn_fastrhino-r68s
+
+define Device/lyt_t68m
+  $(Device/rk3568)
+  DEVICE_VENDOR := LYT
+  DEVICE_MODEL := T68M
+  DEVICE_DTS := rk3568-lyt-t68m
+  UBOOT_DEVICE_NAME := lyt-t68m-rk3568
+  DEVICE_PACKAGES := kmod-r8125 kmod-mt7921e wpad-openssl
+endef
+TARGET_DEVICES += lyt_t68m
+
+define Device/mmbox_anas3035
+  $(Device/rk3568)
+  DEVICE_VENDOR := MMBOX
+  DEVICE_MODEL := ANAS3035
+  DEVICE_DTS := rk3568-mmbox-anas3035
+  UBOOT_DEVICE_NAME := mmbox-anas3035-rk3568
+  DEVICE_PACKAGES := kmod-r8125 kmod-ata-ahci-dwc kmod-hwmon-pwmfan kmod-hwmon-drivetemp
+endef
+TARGET_DEVICES += mmbox_anas3035
+
+define Device/nlnet_xiguapi-v3
+  $(Device/rk3568)
+  DEVICE_VENDOR := NLnet
+  DEVICE_MODEL := XiGuaPi V3
+  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-input-adc-keys
+endef
+TARGET_DEVICES += nlnet_xiguapi-v3
+
+define Device/pine64_rock64
+  $(Device/rk3328)
+  DEVICE_VENDOR := Pine64
+  DEVICE_MODEL := Rock64
+endef
+TARGET_DEVICES += pine64_rock64
+
+define Device/pine64_rockpro64
+  $(Device/rk3399)
+  DEVICE_VENDOR := Pine64
+  DEVICE_MODEL := RockPro64
+  SUPPORTED_DEVICES += pine64,rockpro64-v2.1
+endef
+TARGET_DEVICES += pine64_rockpro64
+
+define Device/radxa_cm3-io
+  $(Device/rk3566)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := CM3 IO
+  DEVICE_DTS := rk3566-radxa-cm3-io
+  UBOOT_DEVICE_NAME := radxa-cm3-io-rk3566
+endef
+TARGET_DEVICES += radxa_cm3-io
+
+define Device/radxa_cm5_lite_asm1184e
+  $(Device/rk3582)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := CM5 Lite (ASM1184E carrier)
+  DEVICE_DTS := rk3588s-radxa-cm5-lite-asm1184e
+  UBOOT_DEVICE_NAME := generic-rk3588
+  BOOT_SCRIPT := cm5-lite
+  DEVICE_PACKAGES += kmod-r8125 kmod-mt7921e wpad-basic-mbedtls kmod-hwmon-pwmfan kmod-pcie_mhi \
+	kmod-mhi-bus kmod-mhi-pci-generic kmod-mtk-t7xx kmod-mhi-wwan-ctrl kmod-mhi-wwan-mbim \
+	kmod-wwan kmod-usb-net-cdc-mbim kmod-usb-net-qmi-wwan kmod-usb-serial-option uqmi \
+	qmodem luci-app-qmodem-next \
+	luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn luci-i18n-package-manager-zh-cn \
+	luci-i18n-qmodem-next-zh-cn pciutils
+  SUPPORTED_DEVICES := radxa,cm5-lite-asm1184e
+endef
+TARGET_DEVICES += radxa_cm5_lite_asm1184e
+
+define Device/radxa_e20c
+  $(Device/rk3528)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := E20C
+  DEVICE_DTS := rk3528-radxa-e20c
+  UBOOT_DEVICE_NAME := radxa-e20c-rk3528
+  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys kmod-r8169
+endef
+TARGET_DEVICES += radxa_e20c
+
+define Device/radxa_e25
+  $(Device/rk3568)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := E25
+  DEVICE_DTS := rk3568-radxa-e25
+  UBOOT_DEVICE_NAME := radxa-e25-rk3568
+  BOOT_SCRIPT := radxa-e25
+  DEVICE_PACKAGES := kmod-r8125 kmod-ata-ahci-dwc
+endef
+TARGET_DEVICES += radxa_e25
+
+define Device/radxa_e52c
+  $(Device/rk3582)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := E52C
+  DEVICE_DTS := rk3582-radxa-e52c
+  UBOOT_DEVICE_NAME := generic-rk3588
+  DEVICE_PACKAGES += blkdiscard kmod-button-hotplug kmod-input-adc-keys kmod-r8125
+  DEVICE_COMPAT_VERSION := 1.1
+  DEVICE_COMPAT_MESSAGE := Network interface names have been changed
+endef
+TARGET_DEVICES += radxa_e52c
+
+define Device/radxa_rock-2a
+  $(Device/rk3528)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 2A
+  UBOOT_DEVICE_NAME := rock-2-rk3528
+  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys
+endef
+TARGET_DEVICES += radxa_rock-2a
+
+define Device/radxa_rock-2f
+  $(Device/rk3528)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 2F
+  UBOOT_DEVICE_NAME := rock-2-rk3528
+  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys
+endef
+TARGET_DEVICES += radxa_rock-2f
+
+define Device/radxa_rock-3a
+  $(Device/rk3568)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 3A
+  SUPPORTED_DEVICES := radxa,rock3a
+  DEVICE_PACKAGES := kmod-usb-net-cdc-ncm kmod-usb-net-rndis
+endef
+TARGET_DEVICES += radxa_rock-3a
+
+define Device/radxa_rock-3b
+  $(Device/rk3568)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 3B
+  DEVICE_PACKAGES := kmod-usb-net-cdc-ncm kmod-usb-net-rndis
+endef
+TARGET_DEVICES += radxa_rock-3b
+
+define Device/radxa_rock-3c
+  $(Device/rk3566)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 3C
+  DEVICE_PACKAGES := kmod-usb-net-cdc-ncm kmod-usb-net-rndis
+endef
+TARGET_DEVICES += radxa_rock-3c
+
+define Device/radxa_rock-4c-plus
+  $(Device/rk3399)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 4C+
+endef
+TARGET_DEVICES += radxa_rock-4c-plus
+
+define Device/radxa_rock-4d
+  $(Device/rk3576)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 4D
+endef
+TARGET_DEVICES += radxa_rock-4d
+
+define Device/radxa_rock-4se
+  $(Device/rk3399)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 4SE
+endef
+TARGET_DEVICES += radxa_rock-4se
+
+define Device/radxa_rock-5-itx
+  $(Device/rk3588)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 5 ITX/ITX+
+  DEVICE_PACKAGES += blkdiscard block-mount kmod-ata-ahci kmod-button-hotplug \
+	kmod-hwmon-pwmfan kmod-input-adc-keys kmod-nvme kmod-r8125 kmod-rtw89-8852be wpad-openssl
+endef
+TARGET_DEVICES += radxa_rock-5-itx
+
+define Device/radxa_rock-5a
+  $(Device/rk3588s)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 5A
+  UBOOT_DEVICE_NAME := rock5a-rk3588s
+  DEVICE_PACKAGES += blkdiscard block-mount kmod-ata-ahci kmod-hwmon-pwmfan kmod-nvme kmod-r8125 kmod-rtw89-8852be wpad-openssl
+endef
+TARGET_DEVICES += radxa_rock-5a
+
+define Device/radxa_rock-5b
+  $(Device/rk3588)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 5B
+  UBOOT_DEVICE_NAME := rock5b-rk3588
+  DEVICE_PACKAGES += blkdiscard block-mount kmod-hwmon-pwmfan kmod-nvme kmod-r8125 kmod-rtw89-8852be wpad-openssl
+endef
+TARGET_DEVICES += radxa_rock-5b
+
+define Device/radxa_rock-5b-plus
+  $(Device/rk3588)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 5B+
+  DEVICE_DTS := rk3588-rock-5b-plus
+  UBOOT_DEVICE_NAME := generic-rk3588
+  DEVICE_PACKAGES += blkdiscard block-mount kmod-hwmon-pwmfan kmod-nvme kmod-r8125 kmod-rtw89-8852be wpad-openssl
+endef
+TARGET_DEVICES += radxa_rock-5b-plus
+
+define Device/radxa_rock-5c
+  $(Device/rk3588s)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 5C/5C Lite
+  DEVICE_PACKAGES += blkdiscard block-mount kmod-ata-ahci kmod-hwmon-pwmfan kmod-nvme kmod-r8125
+endef
+TARGET_DEVICES += radxa_rock-5c
+
+define Device/radxa_rock-5t
+  $(Device/rk3588)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK 5T
+  DEVICE_DTS := rk3588-rock-5t
+  UBOOT_DEVICE_NAME := generic-rk3588
+  DEVICE_PACKAGES += blkdiscard block-mount iwlwifi-firmware-ax210 kmod-hwmon-pwmfan kmod-iwlwifi kmod-nvme kmod-r8125 wpad-openssl
+endef
+TARGET_DEVICES += radxa_rock-5t
+
+define Device/radxa_rock-pi-4a
+  $(Device/rk3399)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK Pi 4A
+  SUPPORTED_DEVICES := radxa,rockpi4a radxa,rockpi4
+  UBOOT_DEVICE_NAME := rock-pi-4-rk3399
+  DEVICE_PACKAGES := kmod-brcmfmac wpad-openssl \
+	brcmfmac-firmware-43456-sdio brcmfmac-nvram-43456-sdio
+endef
+TARGET_DEVICES += radxa_rock-pi-4a
+
+define Device/radxa_rock-pi-e
+  $(Device/rk3328)
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK Pi E
+  DEVICE_ALT0_VENDOR := Radxa
+  DEVICE_ALT0_MODEL := ROCK Pi E v3.0
+  SUPPORTED_DEVICES := radxa,rockpi-e
+  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys kmod-rtw88-8723du kmod-rtw88-8821cu \
+	kmod-usb-net-cdc-ncm kmod-usb-net-rndis wpad-openssl
+endef
+TARGET_DEVICES += radxa_rock-pi-e
 
 define Device/radxa_rock-pi-s
   $(Device/rk3308)
   DEVICE_VENDOR := Radxa
   DEVICE_MODEL := ROCK Pi S
   SUPPORTED_DEVICES := radxa,rockpis
-  UBOOT_DEVICE_NAME := rock-pi-s-rk3308
   BOOT_SCRIPT := rock-pi-s
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-rtw88-8723ds kmod-usb-net-cdc-ncm kmod-usb-net-rndis wpad-basic-wolfssl
+  DEVICE_PACKAGES := kmod-rtw88-8723ds kmod-usb-net-cdc-ncm kmod-usb-net-rndis wpad-openssl
 endef
 TARGET_DEVICES += radxa_rock-pi-s
 
-define Device/advantech_rsb4810
-  DEVICE_VENDOR := Advantech
-  DEVICE_MODEL := RSB4810
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc -urngd
-endef
-TARGET_DEVICES += advantech_rsb4810
-
-define Device/ariaboard_photonicat
-  DEVICE_VENDOR := Ariaboard
-  DEVICE_MODEL := Photonicat
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := photonicat-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script vop | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ath10k kmod-ath10k-sdio pcat-firmware pcat-manager wpad-openssl
-endef
-TARGET_DEVICES += ariaboard_photonicat
-
-define Device/ariaboard_photonicat2
-  DEVICE_VENDOR := Ariaboard
-  DEVICE_MODEL := Photonicat 2
-  SOC := rk3576
-  DEVICE_DTS := rk3576-photonicat2
-  UBOOT_DEVICE_NAME := generic-rk3576
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-aic8800-usb wpad-openssl
-endef
-TARGET_DEVICES += ariaboard_photonicat2
-
-define Device/armsom_sige1
-  DEVICE_VENDOR := ArmSoM
-  DEVICE_MODEL := Sige1
-  DEVICE_DTS := rk3528-armsom-sige1
-  UBOOT_DEVICE_NAME := generic-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := brcmfmac-firmware-43752-sdio kmod-brcmfmac kmod-r8125 wpad -urngd
-endef
-TARGET_DEVICES += armsom_sige1
-
-define Device/armsom_sige3
-  DEVICE_VENDOR := ArmSoM
-  DEVICE_MODEL := Sige3
-  SOC := rk3568
-  DEVICE_DTS := rk3568-armsom-sige3
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := brcmfmac-firmware-43752-sdio kmod-brcmfmac kmod-r8125-rss wpad
-endef
-TARGET_DEVICES += armsom_sige3
-
-define Device/armsom_sige5
-  DEVICE_VENDOR := ArmSoM
-  DEVICE_MODEL := Sige5
-  SOC := rk3576
-  DEVICE_DTS := rk3576-armsom-sige5
-  UBOOT_DEVICE_NAME := sige5-rk3576
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += armsom_sige5
-
-define Device/armsom_sige7
-  DEVICE_VENDOR := ArmSoM
-  DEVICE_MODEL := Sige7
-  SOC := rk3588
-  DEVICE_DTS := rk3588-armsom-sige7
-  UBOOT_DEVICE_NAME := sige7-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-brcmfmac kmod-r8125-rss wpad
-endef
-TARGET_DEVICES += armsom_sige7
-
-define Device/armsom_w3
-  DEVICE_VENDOR := ArmSoM
-  DEVICE_MODEL := W3
-  SOC := rk3588
-  DEVICE_DTS := rk3588-armsom-w3
-  UBOOT_DEVICE_NAME := sige7-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss
-endef
-TARGET_DEVICES += armsom_w3
-
-define Device/bdy_g98
-  DEVICE_VENDOR := BYD
-  DEVICE_MODEL := G98
-  SOC := rk3588
-  DEVICE_DTS := rk3588-bdy-g98
-  SUPPORTED_DEVICES := bdy,bdy-g98
-  UBOOT_DEVICE_NAME := generic-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss kmod-phy-motorcomm kmod-dsa-yt921x
-endef
-TARGET_DEVICES += bdy_g98
-
-define Device/codinge_xiaobao-nas-v1
-  DEVICE_VENDOR := Codinge
-  DEVICE_MODEL := XiaoBao NAS-I
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := xiaobao-nas-v1-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci
-endef
-TARGET_DEVICES += codinge_xiaobao-nas-v1
-
-define Device/dilusense_dlfr100
-  DEVICE_VENDOR := Dilusense
-  DEVICE_MODEL := DLFR100
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := dlfr100-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168
-endef
-TARGET_DEVICES += dilusense_dlfr100
-
-define Device/ezpro_mrkaio-m68s
-  DEVICE_VENDOR := EZPRO
-  DEVICE_MODEL := Mrkaio M68S
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script vop | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-drm-rockchip
-endef
-TARGET_DEVICES += ezpro_mrkaio-m68s
-
-define Device/ezpro_mrkaio-m68s-plus
-  DEVICE_VENDOR := EZPRO
-  DEVICE_MODEL := Mrkaio M68S PLUS
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script vop | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-drm-rockchip kmod-r8125-rss
-endef
-TARGET_DEVICES += ezpro_mrkaio-m68s-plus
-
-define Device/fastrhino_common
-  DEVICE_VENDOR := FastRhino
-  SOC := rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125-rss
-endef
-
-define Device/fastrhino_r66s
-$(call Device/fastrhino_common)
-  DEVICE_MODEL := R66S
-  UBOOT_DEVICE_NAME := fastrhino-r66s-rk3568
-endef
-TARGET_DEVICES += fastrhino_r66s
-
-define Device/fastrhino_r68s
-$(call Device/fastrhino_common)
-  DEVICE_MODEL := R68S
-  UBOOT_DEVICE_NAME := fastrhino-r68s-rk3568
-endef
-TARGET_DEVICES += fastrhino_r68s
-
-define Device/friendlyarm_nanopc-t4
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPC T4
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := nanopc-t4-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-brcmfmac brcmfmac-nvram-4356-sdio cypress-firmware-4356-sdio
-endef
-TARGET_DEVICES += friendlyarm_nanopc-t4
-
-define Device/friendlyarm_nanopc-t6
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPC T6
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := nanopc-t6-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss
-endef
-TARGET_DEVICES += friendlyarm_nanopc-t6
-
-define Device/friendlyarm_nanopi-m5
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi M5
-  SOC := rk3576
-  DEVICE_DTS := rk3576-nanopi-m5
-  UBOOT_DEVICE_NAME := generic-rk3576
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += friendlyarm_nanopi-m5
-
-define Device/friendlyarm_nanopi-neo3
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi NEO3
-  SOC := rk3328
-  UBOOT_DEVICE_NAME := nanopi-r2s-rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-endef
-TARGET_DEVICES += friendlyarm_nanopi-neo3
-
-define Device/friendlyarm_nanopi-r28s
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R28S
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := nanopi-zero2-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-aic8800-sdio kmod-gpio-button-hotplug kmod-r8169 wpad-openssl
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r28s
-
-define Device/friendlyarm_nanopi-zero2
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi Zero2
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := nanopi-zero2-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys
-endef
-TARGET_DEVICES += friendlyarm_nanopi-zero2
-
-define Device/friendlyarm_nanopi-r2c
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R2C
-  SOC := rk3328
-  UBOOT_DEVICE_NAME := nanopi-r2c-rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-usb-net-rtl8152
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r2c
-
-define Device/friendlyarm_nanopi-r2c-plus
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R2C Plus
-  SOC := rk3328
-  UBOOT_DEVICE_NAME := nanopi-r2c-plus-rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-usb-net-rtl8152
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r2c-plus
-
-define Device/friendlyarm_nanopi-r2s
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R2S
-  SOC := rk3328
-  UBOOT_DEVICE_NAME := nanopi-r2s-rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-usb-net-rtl8152
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r2s
-
-define Device/friendlyarm_nanopi-r2s-plus
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R2S Plus
-  SOC := rk3328
-  UBOOT_DEVICE_NAME := nanopi-r2s-plus-rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-usb-net-rtl8152
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r2s-plus
-
-define Device/friendlyarm_nanopi-r3s
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R3S
-  SOC := rk3566
-  UBOOT_DEVICE_NAME := nanopi-r3s-rk3566
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r3s
-
-define Device/friendlyarm_nanopi-r4s
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R4S
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := nanopi-r4s-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r4s
-
-define Device/friendlyarm_nanopi-r4se
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R4SE
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := nanopi-r4se-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r4se
-
-define Device/friendlyarm_nanopi-r4s-enterprise
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R4S Enterprise Edition
-  DEVICE_VARIANT := 4GB LPDDR4
-  SOC := rk3399
-  DEVICE_DTS := rk3399-nanopi-r4s-enterprise
-  UBOOT_DEVICE_NAME := nanopi-r4s-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r4s-enterprise
-
-define Device/friendlyarm_nanopi-r5c
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R5C
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := nanopi-r5c-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125-rss
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r5c
-
-define Device/friendlyarm_nanopi-r5s
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R5S
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := nanopi-r5s-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125-rss
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r5s
-
-define Device/friendlyarm_nanopi-r6c
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R6C
-  SOC := rk3588s
-  UBOOT_DEVICE_NAME := nanopi-r6c-rk3588s
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125-rss
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r6c
-
-define Device/friendlyarm_nanopi-r6s
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R6S
-  SOC := rk3588s
-  UBOOT_DEVICE_NAME := nanopi-r6s-rk3588s
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125-rss
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r6s
-
-define Device/friendlyarm_nanopi-r76s
-  DEVICE_VENDOR := FriendlyARM
-  DEVICE_MODEL := NanoPi R76S
-  SOC := rk3576
-  DEVICE_DTS := rk3576-nanopi-r76s
-  UBOOT_DEVICE_NAME := generic-rk3576
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += friendlyarm_nanopi-r76s
-
-define Device/firefly_station-p2
-  DEVICE_VENDOR := Firefly
-  DEVICE_MODEL := Station P2
-  DEVICE_DTS := rk3568-roc-pc
-  UBOOT_DEVICE_NAME := station-p2-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-brcmfmac kmod-ikconfig wpad-openssl
-endef
-TARGET_DEVICES += firefly_station-p2
-
-define Device/hinlink_common
-  DEVICE_VENDOR := HINLINK
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script vop | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-drm-rockchip kmod-mt7921e kmod-r8125-rss wpad-openssl
-endef
-
-define Device/hinlink_opc-h28k
-  DEVICE_VENDOR := HINLINK
-  DEVICE_MODEL := OPC-H28K
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := generic-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8168 -urngd
-endef
-TARGET_DEVICES += hinlink_opc-h28k
-
-define Device/hinlink_opc-h29k
-  DEVICE_VENDOR := HINLINK
-  DEVICE_MODEL := OPC-H29K
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := generic-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-aic8800-sdio kmod-fb-tft-st7789v wpad-openssl -urngd
-endef
-TARGET_DEVICES += hinlink_opc-h29k
-
-define Device/hinlink_opc-h66k
-$(call Device/hinlink_common)
-  DEVICE_MODEL := OPC-H66K
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := hinlink-h66k-rk3568
-endef
-TARGET_DEVICES += hinlink_opc-h66k
-
-define Device/hinlink_opc-h68k
-$(call Device/hinlink_common)
-  DEVICE_MODEL := OPC-H68K
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := hinlink-h68k-rk3568
-endef
-TARGET_DEVICES += hinlink_opc-h68k
-
-define Device/hinlink_opc-h69k
-$(call Device/hinlink_common)
-  DEVICE_MODEL := OPC-H69K
-  SOC := rk3568
-  DEVICE_PACKAGES += kmod-hwmon-pwmfan kmod-mt7916-firmware kmod-usb-serial-option
-endef
-TARGET_DEVICES += hinlink_opc-h69k
-
-define Device/hinlink_opc-ht2
-  DEVICE_VENDOR := HINLINK
-  DEVICE_MODEL := OPC-HT2
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := generic-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-aic8800-sdio wpad-openssl -urngd
-endef
-TARGET_DEVICES += hinlink_opc-ht2
-
-define Device/linkease_easepi-r1
-  DEVICE_VENDOR := LinkEase
-  DEVICE_MODEL := EasePi R1
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := easepi-r1-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := blkdiscard block-mount kmod-input-adc-keys kmod-nvme kmod-r8125
-endef
-TARGET_DEVICES += linkease_easepi-r1
-
-define Device/lyt_t68m
-  DEVICE_VENDOR := LYT
-  DEVICE_MODEL := T68M
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script vop | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-drm-rockchip kmod-gpio-button-hotplug kmod-r8125-rss
-endef
-TARGET_DEVICES += lyt_t68m
-
-define Device/mmbox_anas3035
-  DEVICE_VENDOR := MMBOX
-  DEVICE_MODEL := ANAS3035
-  SOC := rk3568
-  DEVICE_DTS := rk3568-mmbox-anas3035
-  UBOOT_DEVICE_NAME := mmbox-anas3035-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-hwmon-drivetemp kmod-hwmon-pwmfan kmod-r8125-rss
-endef
-TARGET_DEVICES += mmbox_anas3035
-
-define Device/nlnet_xiguapi-v3
-  DEVICE_VENDOR := NLnet
-  DEVICE_MODEL := XiGuaPi V3
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan
-endef
-TARGET_DEVICES += nlnet_xiguapi-v3
-
-define Device/panther_x2
-  DEVICE_VENDOR := Panther
-  DEVICE_MODEL := X2
-  DEVICE_DTS := rk3566-panther-x2
-  UBOOT_DEVICE_NAME := panther-x2-rk3566
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-brcmfmac kmod-ikconfig brcmfmac-nvram-43430-sdio wpad-openssl
-endef
-TARGET_DEVICES += panther_x2
-
-define Device/pine64_rockpro64
-  DEVICE_VENDOR := Pine64
-  DEVICE_MODEL := RockPro64
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := rockpro64-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += pine64_rockpro64
-
-define Device/radxa_e20c
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := E20C
-  DEVICE_DTS := rk3528-radxa-e20c
-  UBOOT_DEVICE_NAME := radxa-e20c-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168 -urngd
-endef
-TARGET_DEVICES += radxa_e20c
-
-define Device/radxa_cm3-io
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := CM3 IO
-  SOC := rk3566
-  DEVICE_DTS := rk3566-radxa-cm3-io
-  UBOOT_DEVICE_NAME := radxa-cm3-io-rk3566
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += radxa_cm3-io
-
-define Device/radxa_e24c
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := E24C
-  DEVICE_DTS := rk3528-radxa-e24c
-  UBOOT_DEVICE_NAME := radxa-e20c-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-dsa-rtl8365mb -urngd
-endef
-TARGET_DEVICES += radxa_e24c
-
-define Device/radxa_e25
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := E25
-  DEVICE_DTS := rk3568-radxa-e25
-  UBOOT_DEVICE_NAME := radxa-e25-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-r8125-rss
-endef
-TARGET_DEVICES += radxa_e25
-
-define Device/radxa_e52c
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := E52C
-  DEVICE_DTS := rk3582-radxa-e52c
-  UBOOT_DEVICE_NAME := generic-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8125-rss
-endef
-TARGET_DEVICES += radxa_e52c
-
-define Device/radxa_e54c
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := E54C
-  DEVICE_DTS := rk3582-radxa-e54c
-  UBOOT_DEVICE_NAME := generic-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-dsa-rtl8365mb
-endef
-TARGET_DEVICES += radxa_e54c
-
-define Device/radxa_rock-2a
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 2A
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := radxa-e20c-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += radxa_rock-2a
-
-define Device/radxa_rock-2f
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 2F
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := radxa-e20c-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += radxa_rock-2f
-
-define Device/radxa_rock-3a
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 3A
-  SOC := rk3568
-  SUPPORTED_DEVICES := radxa,rock3a
-  UBOOT_DEVICE_NAME := rock-3a-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += radxa_rock-3a
-
-define Device/radxa_rock-3b
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 3B
-  SOC := rk3568
-  UBOOT_DEVICE_NAME := rock-3b-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += radxa_rock-3b
-
-define Device/radxa_rock-3c
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 3C
-  SOC := rk3566
-  UBOOT_DEVICE_NAME := rock-3c-rk3566
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-aic8800-sdio wpad-openssl
-endef
-TARGET_DEVICES += radxa_rock-3c
-
-define Device/radxa_rock-4c-plus
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 4C+
-  SOC := rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  UBOOT_DEVICE_NAME := rock-4c-plus-rk3399
-endef
-TARGET_DEVICES += radxa_rock-4c-plus
-
-define Device/radxa_rock-pi-4a
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK Pi 4A
-  SOC := rk3399
-  SUPPORTED_DEVICES := radxa,rockpi4a radxa,rockpi4
-  UBOOT_DEVICE_NAME := rock-pi-4-rk3399
-endef
-TARGET_DEVICES += radxa_rock-pi-4a
-
-define Device/radxa_rock-pi-e
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK Pi E
-  SOC := rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys
-endef
-TARGET_DEVICES += radxa_rock-pi-e
-
-define Device/radxa_rock-pi-e-v3
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK Pi E v3.0
-  SOC := rk3328
-  DEVICE_DTS := rk3328-rock-pi-e
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-button-hotplug kmod-input-adc-keys kmod-rtw88-8723du kmod-usb-net-cdc-ncm kmod-usb-net-rndis wpad-basic-mbedtls
-endef
-TARGET_DEVICES += radxa_rock-pi-e-v3
-
-define Device/radxa_rock-4d
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 4D
-  SOC := rk3576
-  UBOOT_DEVICE_NAME := rock-4d-rk3576
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-aic8800-usb wpad-openssl
-endef
-TARGET_DEVICES += radxa_rock-4d
-
-define Device/radxa_rock-4se
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 4SE
-  SOC := rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  UBOOT_DEVICE_NAME := rock-4se-rk3399
-endef
-TARGET_DEVICES += radxa_rock-4se
-
-define Device/radxa_rock-5-itx
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 5 ITX/ITX+
-  SOC := rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci kmod-button-hotplug kmod-hwmon-pwmfan kmod-input-adc-keys kmod-nvme kmod-r8169 kmod-rtw89-8852be wpad-basic-mbedtls
-endef
-TARGET_DEVICES += radxa_rock-5-itx
-
-define Device/radxa_rock-5a
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 5A
-  SOC := rk3588s
-  UBOOT_DEVICE_NAME := rock5a-rk3588s
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan
-endef
-TARGET_DEVICES += radxa_rock-5a
-
-define Device/radxa_rock-5b
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 5B
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := rock5b-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss kmod-hwmon-pwmfan
-endef
-TARGET_DEVICES += radxa_rock-5b
-
-define Device/radxa_rock-5b-plus
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 5B+
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := generic-rk3588
-  DEVICE_DTS := rk3588-rock-5b-plus
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan kmod-nvme kmod-r8169 kmod-rtw89-8852be wpad-basic-mbedtls
-endef
-TARGET_DEVICES += radxa_rock-5b-plus
-
-define Device/radxa_rock-5c
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 5C/5C Lite
-  SOC := rk3588s
-  UBOOT_DEVICE_NAME := rock-5c-rk3588s
-  DEVICE_PACKAGES := kmod-aic8800-usb wpad-openssl
-endef
-TARGET_DEVICES += radxa_rock-5c
-
-define Device/radxa_rock-5t
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := ROCK 5T
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := generic-rk3588
-  DEVICE_DTS := rk3588-rock-5t
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := iwlwifi-firmware-ax210 kmod-hwmon-pwmfan kmod-iwlwifi kmod-nvme kmod-r8169 wpad-basic-mbedtls
-endef
-TARGET_DEVICES += radxa_rock-5t
-
 define Device/radxa_zero-3e
+  $(Device/rk3566)
   DEVICE_VENDOR := Radxa
   DEVICE_MODEL := ZERO 3E
   DEVICE_DTS := rk3566-radxa-zero-3e
   UBOOT_DEVICE_NAME := radxa-zero-3-rk3566
+  DEVICE_PACKAGES := kmod-usb-net-cdc-ncm kmod-usb-net-rndis
 endef
 TARGET_DEVICES += radxa_zero-3e
 
 define Device/radxa_zero-3w
+  $(Device/rk3566)
   DEVICE_VENDOR := Radxa
   DEVICE_MODEL := ZERO 3W
   DEVICE_DTS := rk3566-radxa-zero-3w
-  DEVICE_PACKAGES := kmod-aic8800-sdio wpad-openssl
   UBOOT_DEVICE_NAME := radxa-zero-3-rk3566
+  DEVICE_PACKAGES := kmod-usb-net-cdc-ncm kmod-usb-net-rndis
 endef
 TARGET_DEVICES += radxa_zero-3w
 
-define Device/rocktech_mpc1903
-  DEVICE_VENDOR := Rocktech
-  DEVICE_MODEL := MPC1903
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := mpc1903-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-usb-net-smsc75xx kmod-usb-serial-cp210x
+define Device/sinovoip_bpi-r2-pro
+  $(Device/rk3568)
+  DEVICE_VENDOR := Bananapi
+  DEVICE_MODEL := BPi-R2 Pro
+  SUPPORTED_DEVICES := sinovoip,rk3568-bpi-r2pro
+  DEVICE_PACKAGES := kmod-ata-ahci-dwc
 endef
-TARGET_DEVICES += rocktech_mpc1903
+TARGET_DEVICES += sinovoip_bpi-r2-pro
 
-define Device/rongpin_king3399
-  DEVICE_VENDOR := Rongpin
-  DEVICE_MODEL := King3399
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := king3399-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8168 kmod-brcmfmac cypress-firmware-4356-sdio wpad-openssl
+define Device/widora_mangopi-m28c
+  $(Device/rk3528)
+  DEVICE_VENDOR := Widora
+  DEVICE_MODEL := MangoPi M28C
+  DEVICE_PACKAGES := kmod-aic8800-sdio wpad-openssl kmod-hwmon-pwmfan
 endef
-TARGET_DEVICES += rongpin_king3399
+TARGET_DEVICES += widora_mangopi-m28c
 
-define Device/rumu3f_fine-3399
-  DEVICE_VENDOR := RUMU3F
-  DEVICE_MODEL := FINE 3399
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := fine3399-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := brcmfmac-firmware-43430b0-sdio brcmfmac-nvram-43430b0-sdio \
-	kmod-brcmfmac kmod-gpio-button-hotplug kmod-usb-net-rtl8152 wpad
+define Device/widora_mangopi-m28k
+  $(Device/rk3528)
+  DEVICE_VENDOR := Widora
+  DEVICE_MODEL := MangoPi M28K
+  DEVICE_PACKAGES := kmod-aic8800-sdio wpad-openssl kmod-r8169
 endef
-TARGET_DEVICES += rumu3f_fine-3399
-
-define Device/scensmart_sv901-eaio
-  DEVICE_VENDOR := ScenSmart
-  DEVICE_MODEL := SV901 EAIO
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := sv901-eaio-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
-  DEVICE_PACKAGES := brcmfmac-nvram-4356-sdio cypress-firmware-4356-sdio kmod-brcmfmac \
-	kmod-gpio-button-hotplug kmod-switch-rtl8367b swconfig wpad
-endef
-TARGET_DEVICES += scensmart_sv901-eaio
-
-define Device/seewo_srcm3588-io
-  DEVICE_VENDOR := Seewo
-  DEVICE_MODEL := 3588 IO Board
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := generic-rk3588
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-hwmon-pwmfan kmod-r8125-rss kmod-rfkill
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += seewo_srcm3588-io
-
-define Device/seewo_srcm3588-sw
-$(call Device/seewo_srcm3588-io)
-  DEVICE_MODEL := 3588 Expand Board
-  DEVICE_PACKAGES += kmod-switch-rtl8367b
-endef
-TARGET_DEVICES += seewo_srcm3588-sw
-
-define Device/seewo_sv21
-  DEVICE_VENDOR := Seewo
-  DEVICE_MODEL := SV21
-  DEVICE_DTS := rk3568-seewo-sv21
-  UBOOT_DEVICE_NAME := generic-rk3568
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-usb-net-rtl8152
-endef
-TARGET_DEVICES += seewo_sv21
-
-define Device/sharevdi_h3399pc
-  DEVICE_VENDOR := SHAREVDI
-  DEVICE_MODEL := H3399PC
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := h3399pc-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168
-endef
-TARGET_DEVICES += sharevdi_h3399pc
-
-define Device/sharevdi_guangmiao-g4c
-  DEVICE_VENDOR := SHAREVDI
-  DEVICE_MODEL := GuangMiao G4C
-  SOC := rk3399
-  UBOOT_DEVICE_NAME := guangmiao-g4c-rk3399
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-r8168
-endef
-TARGET_DEVICES += sharevdi_guangmiao-g4c
+TARGET_DEVICES += widora_mangopi-m28k
 
 define Device/xunlong_orangepi-5
+  $(Device/rk3588s)
   DEVICE_VENDOR := Xunlong
   DEVICE_MODEL := Orange Pi 5
-  SOC := rk3588s
-  UBOOT_DEVICE_NAME := orangepi-5-rk3588s
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss
 endef
 TARGET_DEVICES += xunlong_orangepi-5
 
-define Device/xunlong_orangepi-5-max
-  DEVICE_VENDOR := Xunlong
-  DEVICE_MODEL := Orange Pi 5 Max
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := orangepi-5-plus-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss
-endef
-TARGET_DEVICES += xunlong_orangepi-5-max
-
 define Device/xunlong_orangepi-5-plus
+  $(Device/rk3588)
   DEVICE_VENDOR := Xunlong
   DEVICE_MODEL := Orange Pi 5 Plus
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := orangepi-5-plus-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss
+  DEVICE_PACKAGES += kmod-r8125
 endef
 TARGET_DEVICES += xunlong_orangepi-5-plus
 
-define Device/xunlong_orangepi-5-ultra
-  DEVICE_VENDOR := Xunlong
-  DEVICE_MODEL := Orange Pi 5 Ultra
-  SOC := rk3588
-  UBOOT_DEVICE_NAME := orangepi-5-plus-rk3588
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-r8125-rss
-endef
-TARGET_DEVICES += xunlong_orangepi-5-ultra
-
 define Device/xunlong_orangepi-r1-plus
+  $(Device/rk3328)
   DEVICE_VENDOR := Xunlong
   DEVICE_MODEL := Orange Pi R1 Plus
-  SOC := rk3328
-  UBOOT_DEVICE_NAME := orangepi-r1-plus-rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
   DEVICE_PACKAGES := kmod-usb-net-rtl8152
 endef
 TARGET_DEVICES += xunlong_orangepi-r1-plus
 
 define Device/xunlong_orangepi-r1-plus-lts
+  $(Device/rk3328)
   DEVICE_VENDOR := Xunlong
   DEVICE_MODEL := Orange Pi R1 Plus LTS
-  SOC := rk3328
-  UBOOT_DEVICE_NAME := orangepi-r1-plus-lts-rk3328
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-bin | gzip | append-metadata
   DEVICE_PACKAGES := kmod-usb-net-rtl8152
 endef
 TARGET_DEVICES += xunlong_orangepi-r1-plus-lts
-
-define Device/widora_mangopi-m28
-  DEVICE_VENDOR := Widora
-  SOC := rk3528
-  UBOOT_DEVICE_NAME := generic-rk3528
-  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-aic8800-sdio wpad-openssl -urngd
-endef
-
-define Device/widora_mangopi-m28c
-$(call Device/widora_mangopi-m28)
-  DEVICE_MODEL := MangoPi M28C
-  DEVICE_PACKAGES += kmod-usb-serial-option
-endef
-TARGET_DEVICES += widora_mangopi-m28c
-
-define Device/widora_mangopi-m28k
-$(call Device/widora_mangopi-m28)
-  DEVICE_MODEL := MangoPi M28K
-  DEVICE_PACKAGES += kmod-r8168
-endef
-TARGET_DEVICES += widora_mangopi-m28k
-
-define Device/widora_mangopi-m28k-pro
-$(call Device/widora_mangopi-m28)
-  DEVICE_MODEL := MangoPi M28K Pro
-  DEVICE_PACKAGES += kmod-i2c-gpio kmod-r8125
-endef
-TARGET_DEVICES += widora_mangopi-m28k-pro
-
-define Device/wxy_oec-turbo-4g
-  DEVICE_VENDOR := WXY
-  DEVICE_MODEL := OEC Turbo 4G
-  SOC := rk3568
-  DEVICE_DTS := rk3566-oec-turbo-4g
-  UBOOT_DEVICE_NAME := wxy-rk3566
-  IMAGE_PART_OFFSET := 184320
-  IMAGE_PART_ALIGN := 2048
-  IMAGE_GPT := 1
-  IMAGE_BOOTFS := 1
-  BOOTLOADER_IMAGE := bootloader.img
-  BOOTLOADER_OFFSET := 64
-  ENV_IMAGE := env.bin
-  ENV_OFFSET := 294912
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc
-  IMAGE/sysupgrade.img.gz := boot-img-ext4 | pine64-img | gzip | append-metadata
-endef
-TARGET_DEVICES += wxy_oec-turbo-4g

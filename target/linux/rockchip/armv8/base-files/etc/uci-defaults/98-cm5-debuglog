@@ -1,0 +1,11 @@
+#!/bin/sh
+# Keep kernel/user log on flash so the last messages before a reset survive.
+# Removed automatically once debugging is finished:
+#   rm /etc/uci-defaults/98-cm5-debuglog; uci set system.@system[0].log_file=''
+uci -q set system.@system[0].log_file='/root/bootlog/system.log'
+uci -q set system.@system[0].log_size='1024'
+uci -q set system.@system[0].log_proto='udp'
+uci -q commit system
+
+mkdir -p /root/bootlog
+exit 0

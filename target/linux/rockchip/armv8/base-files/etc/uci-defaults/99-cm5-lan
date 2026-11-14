@@ -1,0 +1,73 @@
+#!/bin/sh
+# Radxa CM5 Lite carrier fixups, run once on first boot.
+#
+# Interface names are NOT stable on this board: the MTK T700 5G modem and the
+# USB side of the M.2 slot may claim ethN first, pushing the two RTL8125B NICs
+# to other numbers. Everything below therefore locates devices by PCI path and
+# only then uses whatever name the kernel assigned.
+
+find_netdev() {
+	for i in /sys/class/net/*; do
+		local dev="${i##*/}"
+		[ "$dev" = "lo" ] && continue
+		[ -e "$i/device" ] || continue
+		case "$(readlink -f "$i/device")" in
+			*"$1"*) echo "$dev"; return 0 ;;
+		esac
+	done
+	return 1
+}
+
+lanif=$(find_netdev "fe1c0000.ethernet")     # on-board RTL8211F (1G)
+nic1=$(find_netdev "0004:44:00.0")            # RTL8125B #1
+nic2=$(find_netdev "0004:46:00.0")            # RTL8125B #2
+
+[ -n "$lanif" ] || lanif="eth0"
+
+# Stable locally-administered MACs derived from the SoC serial number.
+sn=$(tr -d '\000' < /proc/device-tree/serial-number 2>/dev/null | tr 'A-Z' 'a-z')
+case "$sn" in *[!0-9a-f]*) sn="" ;; esac
+[ ${#sn} -ge 10 ] || sn="0badc0de00"
+h=${sn#"${sn%??????????}"}
+mac1="02:$(echo "$h" | sed 's/../&:/g; s/:$//')"
+last=${mac1##*:}
+n=$((0x$last))
+[ "$n" -lt 255 ] || n=0
+mac2="${mac1%:*}:$(printf '%02x' $((n + 1)))"
+
+# 1. br-lan must contain the 1G PHY plus both 2.5G ports, whatever their names.
+idx=0
+while uci -q get "network.@device[$idx]" >/dev/null 2>&1; do
+	if [ "$(uci -q get "network.@device[$idx].name")" = "br-lan" ]; then
+		uci -q delete "network.@device[$idx].ports"
+		for p in "$lanif" "$nic1" "$nic2"; do
+			[ -n "$p" ] || continue
+			[ -d "/sys/class/net/$p" ] || continue
+			uci -q add_list "network.@device[$idx].ports=$p"
+		done
+	fi
+	idx=$((idx + 1))
+done
+
+# 2. Stable MACs for the two RTL8125B (their OTP has no MAC).
+set_mac() {
+	[ -n "$1" ] || return 0
+	[ -d "/sys/class/net/$1" ] || return 0
+	i=0
+	while uci -q get "network.@device[$i]" >/dev/null 2>&1; do
+		[ "$(uci -q get "network.@device[$i].name")" = "$1" ] && return 0
+		i=$((i + 1))
+	done
+	uci -q batch <<-EOF
+		add network device
+		set network.@device[-1].name='$1'
+		set network.@device[-1].macaddr='$2'
+	EOF
+}
+
+set_mac "$nic1" "$mac1"
+set_mac "$nic2" "$mac2"
+
+uci -q commit network
+
+exit 0

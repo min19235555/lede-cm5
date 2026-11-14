@@ -1,0 +1,67 @@
+#!/bin/sh /etc/rc.common
+# Boot-loop monitor.
+#
+# Records every boot to flash so a reset loop can be proven and the reason
+# recovered afterwards:
+#   /root/bootlog/count     number of boots
+#   /root/bootlog/crashes   boots that never reached 5 minutes of uptime
+#   /root/bootlog/boot-N.log  dmesg + PCI + net snapshot of boot N
+#
+# A "running" marker is created at boot and removed after 5 minutes (or on a
+# clean shutdown), so a reboot before that point is counted as abnormal.
+
+START=95
+
+DIR=/root/bootlog
+
+start() {
+	mkdir -p "$DIR"
+	(
+		cnt=$(cat "$DIR/count" 2>/dev/null || echo 0)
+		cnt=$((cnt + 1))
+		echo "$cnt" > "$DIR/count"
+
+		if [ -f "$DIR/running" ]; then
+			c=$(cat "$DIR/crashes" 2>/dev/null || echo 0)
+			c=$((c + 1))
+			echo "$c" > "$DIR/crashes"
+			logger -t bootmon "previous boot did not reach 5min (abnormal #$c)"
+		fi
+		touch "$DIR/running"
+
+		# Recover the previous boot's kernel messages from ramoops.
+		if [ -d /sys/fs/pstore ]; then
+			for f in /sys/fs/pstore/*; do
+				[ -f "$f" ] || continue
+				mkdir -p "$DIR/pstore-$cnt"
+				cat "$f" > "$DIR/pstore-$cnt/${f##*/}" 2>/dev/null
+			done
+			rm -f /sys/fs/pstore/* 2>/dev/null
+		fi
+
+		{
+			echo "===== boot #$cnt date=$(date) uptime=$(cut -d. -f1 /proc/uptime)s"
+			echo "--- model: $(tr -d '\000' < /proc/device-tree/model 2>/dev/null)"
+			echo "--- cmdline: $(cat /proc/cmdline)"
+			echo "--- pci:"
+			lspci -nn 2>/dev/null
+			echo "--- link:"
+			ip -br link 2>/dev/null
+			echo "--- dmesg:"
+			dmesg
+		} > "$DIR/boot-$cnt.log" 2>&1
+
+		ls -1t "$DIR"/boot-*.log 2>/dev/null | tail -n +11 | while read -r f; do
+			rm -f "$f"
+		done
+
+		sleep 120
+		dmesg > "$DIR/boot-$cnt-2min.log" 2>&1
+		sleep 180
+		rm -f "$DIR/running"
+	) &
+}
+
+stop() {
+	rm -f "$DIR/running"
+}

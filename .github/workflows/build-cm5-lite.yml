@@ -1,0 +1,117 @@
+name: Build LEDE for Radxa CM5 Lite
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: lede-cm5-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+            /opt/hostedtoolcache/CodeQL /usr/local/share/boost /usr/lib/jvm
+          sudo apt-get clean
+          df -h /
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential clang flex bison g++ gawk \
+            gettext git libncurses-dev libssl-dev python3 python3-dev \
+            python3-setuptools python3-pyelftools swig rsync unzip \
+            zlib1g-dev file wget ccache libelf-dev
+
+      - name: Configure firmware
+        run: |
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+          cat > .config <<'EOF'
+          CONFIG_TARGET_rockchip=y
+          CONFIG_TARGET_rockchip_armv8=y
+          CONFIG_TARGET_rockchip_armv8_DEVICE_radxa_cm5_lite_asm1184e=y
+          CONFIG_TARGET_KERNEL_PARTSIZE=64
+          CONFIG_TARGET_ROOTFS_PARTSIZE=512
+          CONFIG_PACKAGE_luci=y
+          EOF
+          make defconfig
+          echo '--- selected device ---'
+          grep -E 'CONFIG_TARGET_rockchip_armv8_DEVICE|CONFIG_PACKAGE_luci=' .config
+
+      - name: Download sources
+        run: |
+          make -j"$(nproc)" download
+
+      - name: Build host tools
+        run: |
+          set -o pipefail
+          make -j"$(nproc)" tools/compile 2>&1 | tee tools.log
+
+      - name: Build toolchain
+        run: |
+          set -o pipefail
+          make -j"$(nproc)" toolchain/compile 2>&1 | tee toolchain.log
+
+      - name: Compile target/linux (verbose)
+        run: |
+          set -o pipefail
+          make -j"$(nproc)" V=s target/linux/compile 2>&1 | tee target-linux.log
+
+      - name: Compile kernel modules (verbose)
+        run: |
+          set -o pipefail
+          make -j"$(nproc)" V=s package/kernel/linux/compile 2>&1 | tee kmod.log
+
+      - name: Compile U-Boot (verbose)
+        run: |
+          set -o pipefail
+          make -j"$(nproc)" V=s package/boot/uboot-rockchip/compile 2>&1 | tee uboot.log
+
+      - name: Compile all packages
+        run: |
+          set -o pipefail
+          make -j"$(nproc)" package/compile 2>&1 | tee package-compile.log
+
+      - name: Build
+        run: |
+          set -o pipefail
+          make -j"$(nproc)" 2>&1 | tee build.log
+
+      - name: Upload firmware
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lede-rockchip-armv8-radxa_cm5_lite
+          path: |
+            bin/targets/rockchip/armv8/*.img.gz
+            bin/targets/rockchip/armv8/*.sha256
+            bin/targets/rockchip/armv8/*.manifest
+            bin/targets/rockchip/armv8/*.buildinfo
+          if-no-files-found: warn
+
+      - name: Upload build logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: |
+            tools.log
+            toolchain.log
+            target-linux.log
+            kmod.log
+            uboot.log
+            package-compile.log
+            build.log
+          if-no-files-found: warn

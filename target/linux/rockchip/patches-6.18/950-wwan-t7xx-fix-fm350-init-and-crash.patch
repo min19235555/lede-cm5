@@ -1,0 +1,59 @@
+From: cm5-lite <cm5-lite@local>
+Subject: [PATCH] wwan: t7xx: fix FM350-GL init abort and crash on recovery
+
+The in-tree mtk_t7xx driver has three problems with the Fibocom FM350-GL
+(14c3:4d75) on kernel 6.18:
+
+  * t7xx_wait_pm_config() treats a PCIe PM resource timeout as fatal and
+    aborts initialisation.
+  * the FSM gives the modem only 20 s to reach the Linux/LK stage, which is
+    too short on slower hosts.
+  * port_ctl_uninit() stops the kthread but keeps the pointer, so a second
+    uninit during error recovery dereferences a dangling pointer and the
+    kernel crashes (seen as a watchdog reset a minute later).
+
+Make the PM timeout non-fatal, raise the stage timeout to 60 s and clear
+the thread pointer.
+
+---
+--- a/drivers/net/wwan/t7xx/t7xx_pci.c
++++ b/drivers/net/wwan/t7xx/t7xx_pci.c
+@@ -215,8 +215,11 @@
+ 				(val & T7XX_PCIE_RESOURCE_STS_MSK) == T7XX_PCIE_RESOURCE_STS_MSK,
+ 				PM_RESOURCE_POLL_STEP_US, PM_RESOURCE_POLL_TIMEOUT_US, true,
+ 				IREG_BASE(t7xx_dev) + T7XX_PCIE_RESOURCE_STATUS);
+-	if (ret == -ETIMEDOUT)
+-		dev_err(&t7xx_dev->pdev->dev, "PM configuration timed out\n");
++	if (ret == -ETIMEDOUT) {
++		dev_warn(&t7xx_dev->pdev->dev,
++			 "PM configuration timed out, continuing\n");
++		ret = 0;
++	}
+ 
+ 	return ret;
+ }
+--- a/drivers/net/wwan/t7xx/t7xx_state_monitor.c
++++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
+@@ -51,7 +51,7 @@
+ 	read_poll_timeout(ioread32, status,	\
+ 			  ((status & MISC_STAGE_MASK) == T7XX_DEV_STAGE_LINUX) ||	\
+ 			  ((status & MISC_STAGE_MASK) == T7XX_DEV_STAGE_LK), 100000,	\
+-			  20000000, false, IREG_BASE(md->t7xx_dev) +	\
++			  60000000, false, IREG_BASE(md->t7xx_dev) +	\
+ 			  T7XX_PCIE_MISC_DEV_STATUS)
+ 
+ void t7xx_fsm_notifier_register(struct t7xx_modem *md, struct t7xx_fsm_notifier *notifier)
+--- a/drivers/net/wwan/t7xx/t7xx_port_ctrl_msg.c
++++ b/drivers/net/wwan/t7xx/t7xx_port_ctrl_msg.c
+@@ -260,8 +260,10 @@
+ 	unsigned long flags;
+ 	struct sk_buff *skb;
+ 
+-	if (port->thread)
++	if (port->thread) {
+ 		kthread_stop(port->thread);
++		port->thread = NULL;
++	}
+ 
+ 	spin_lock_irqsave(&port->rx_wq.lock, flags);
+ 	port->rx_length_th = 0;
