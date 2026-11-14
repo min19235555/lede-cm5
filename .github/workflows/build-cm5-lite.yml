@@ -64,7 +64,14 @@ jobs:
       - name: Probe host tools (verbose, fail fast)
         run: |
           set -o pipefail
-          make -j1 V=s tools/elfutils/compile 2>&1 | tail -400
+          # LEDE's staged bison is installed without share/bison, and the build
+          # system overrides BISON_PKGDATADIR with that path. Seed the data from
+          # the runner's bison (same 3.8.2) before anything needs it.
+          make -j1 tools/bison/compile
+          mkdir -p staging_dir/host/share/bison
+          cp -a /usr/share/bison/. staging_dir/host/share/bison/
+          ls staging_dir/host/share/bison/m4sugar/m4sugar.m4
+          make -j1 V=s tools/elfutils/compile 2>&1 | tail -300
 
       - name: Build host tools
         run: |
