@@ -71,19 +71,6 @@ define Device/IfnameMigration
   DEVICE_COMPAT_MESSAGE := Network interface names have been changed
 endef
 
-define Device/9tripod_x3568-v4
-  $(Device/rk3568)
-  DEVICE_VENDOR := 9Tripod
-  DEVICE_MODEL := X3568
-  DEVICE_VARIANT := v4
-  DEVICE_DTS := rk3568-9tripod-x3568-v4
-  SUPPORTED_DEVICES := ninetripod,x3568-v4
-  DEVICE_PACKAGES := blkdiscard block-mount kmod-ata-ahci-dwc kmod-nvme kmod-hwmon-pwmfan \
-	kmod-input-adc-keys kmod-rtc-pcf8563 kmod-brcmfmac wpad-openssl \
-	brcmfmac-firmware-43752-sdio brcmfmac-nvram-43752-sdio
-  UBOOT_DEVICE_NAME := 9tripod-x3568-v4-rk3568
-endef
-TARGET_DEVICES += 9tripod_x3568-v4
 
 define Device/ariaboard_photonicat
   $(Device/rk3568)
@@ -143,28 +130,7 @@ define Device/ezpro_mrkaio-m68s
 endef
 TARGET_DEVICES += ezpro_mrkaio-m68s
 
-define Device/firefly_roc-rk3328-cc
-  $(Device/rk3328)
-  DEVICE_VENDOR := Firefly
-  DEVICE_MODEL := ROC-RK3328-CC
-  DEVICE_DTS := rk3328-roc-cc
-  UBOOT_DEVICE_NAME := roc-cc-rk3328
-endef
-TARGET_DEVICES += firefly_roc-rk3328-cc
 
-define Device/firefly_roc-rk3568-pc
-  $(Device/rk3568)
-  DEVICE_VENDOR := Firefly
-  DEVICE_MODEL := Station P2
-  DEVICE_ALT0_VENDOR := Firefly
-  DEVICE_ALT0_MODEL := ROC-RK3568-PC
-  DEVICE_DTS := rk3568-roc-pc
-  SUPPORTED_DEVICES := firefly,rk3568-roc-pc
-  UBOOT_DEVICE_NAME := roc-pc-rk3568
-  DEVICE_PACKAGES := kmod-ata-ahci-dwc kmod-brcmfmac wpad-openssl \
-	brcmfmac-firmware-43752-sdio brcmfmac-nvram-43752-sdio
-endef
-TARGET_DEVICES += firefly_roc-rk3568-pc
 
 define Device/friendlyarm_nanopc-t4
   $(Device/rk3399)
@@ -305,18 +271,6 @@ define Device/friendlyarm_nanopi-zero2
 endef
 TARGET_DEVICES += friendlyarm_nanopi-zero2
 
-define Device/graperain_g3568-v2
-  $(Device/rk3568)
-  DEVICE_VENDOR := Graperain
-  DEVICE_MODEL := G3568
-  DEVICE_VARIANT := v2
-  DEVICE_DTS := rk3568-graperain-g3568-v2
-  DEVICE_PACKAGES := blkdiscard block-mount kmod-ata-ahci-dwc kmod-nvme kmod-hwmon-pwmfan \
-	kmod-input-adc-keys kmod-rtc-pcf8563 kmod-brcmfmac wpad-openssl \
-	brcmfmac-firmware-4356-sdio brcmfmac-nvram-4356-sdio
-  UBOOT_DEVICE_NAME := graperain-g3568-v2-rk3568
-endef
-TARGET_DEVICES += graperain_g3568-v2
 
 define Device/huake_guangmiao-g4c
   $(Device/rk3399)
@@ -351,15 +305,6 @@ define Device/lunzn_fastrhino-r68s
 endef
 TARGET_DEVICES += lunzn_fastrhino-r68s
 
-define Device/lyt_t68m
-  $(Device/rk3568)
-  DEVICE_VENDOR := LYT
-  DEVICE_MODEL := T68M
-  DEVICE_DTS := rk3568-lyt-t68m
-  UBOOT_DEVICE_NAME := lyt-t68m-rk3568
-  DEVICE_PACKAGES := kmod-r8125 kmod-mt7921e wpad-openssl
-endef
-TARGET_DEVICES += lyt_t68m
 
 define Device/mmbox_anas3035
   $(Device/rk3568)
@@ -430,16 +375,6 @@ define Device/radxa_e20c
 endef
 TARGET_DEVICES += radxa_e20c
 
-define Device/radxa_e25
-  $(Device/rk3568)
-  DEVICE_VENDOR := Radxa
-  DEVICE_MODEL := E25
-  DEVICE_DTS := rk3568-radxa-e25
-  UBOOT_DEVICE_NAME := radxa-e25-rk3568
-  BOOT_SCRIPT := radxa-e25
-  DEVICE_PACKAGES := kmod-r8125 kmod-ata-ahci-dwc
-endef
-TARGET_DEVICES += radxa_e25
 
 define Device/radxa_e52c
   $(Device/rk3582)
