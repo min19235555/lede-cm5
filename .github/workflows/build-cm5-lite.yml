@@ -96,11 +96,6 @@ jobs:
           set -o pipefail
           make -j"$(nproc)" V=s package/kernel/linux/compile 2>&1 | tee kmod.log
 
-      - name: Compile U-Boot (verbose)
-        run: |
-          set -o pipefail
-          make -j"$(nproc)" V=s package/boot/uboot-rockchip/compile 2>&1 | tee uboot.log
-
       - name: Compile all packages
         run: |
           set -o pipefail
@@ -133,7 +128,6 @@ jobs:
             toolchain.log
             target-linux.log
             kmod.log
-            uboot.log
             package-compile.log
             build.log
           if-no-files-found: warn
