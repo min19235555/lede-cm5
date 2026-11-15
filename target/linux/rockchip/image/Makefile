@@ -97,4 +97,17 @@ endef
 
 include $(SUBTARGET).mk
 
+# LEDE ships a trimmed DTS set in files/, but every entry of TARGET_DEVICES
+# still gets a dtb rule, and "compile-dtb" is a prerequisite of install. Skip
+# the boards whose .dts is not part of this tree instead of failing the build.
+define Device/Build/dtb
+  ifndef BUILD_DTS_$(1)
+  BUILD_DTS_$(1) := 1
+  $(KDIR)/image-$(1).dtb: FORCE
+	$(if $(wildcard $(strip $(2))/$(strip $(3)).dts),$(call Image/BuildDTB,$(strip $(2))/$(strip $(3)).dts,$$@),@echo "skipping missing DTS $(strip $(2))/$(strip $(3)).dts")
+
+  compile-dtb: $(KDIR)/image-$(1).dtb
+  endif
+endef
+
 $(eval $(call BuildImage))
