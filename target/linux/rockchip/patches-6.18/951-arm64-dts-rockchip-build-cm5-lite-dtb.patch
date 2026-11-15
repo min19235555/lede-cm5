@@ -1,0 +1,17 @@
+From: cm5-lite <cm5-lite@local>
+Subject: [PATCH] arm64: dts: rockchip: build the Radxa CM5 Lite carrier DTB
+
+The board DTS lives in the target's files/ directory, which LEDE copies
+into the kernel tree but does not add to the dtb list, so "make dtbs"
+never builds it and target/linux/install fails to find the dtb.
+
+---
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -159,6 +159,7 @@
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3576-roc-pc.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3576-rock-4d.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3582-radxa-e52c.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-radxa-cm5-lite-asm1184e.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-armsom-sige7.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-armsom-w3.dtb
