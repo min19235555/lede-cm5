@@ -96,11 +96,6 @@ jobs:
           set -o pipefail
           make -j"$(nproc)" V=s package/kernel/linux/compile 2>&1 | tee kmod.log
 
-      - name: Compile all packages
-        run: |
-          set -o pipefail
-          make -j"$(nproc)" package/compile 2>&1 | tee package-compile.log
-
       - name: Build
         run: |
           set -o pipefail
@@ -128,6 +123,6 @@ jobs:
             toolchain.log
             target-linux.log
             kmod.log
-            package-compile.log
+            package-install.log
             build.log
           if-no-files-found: warn
