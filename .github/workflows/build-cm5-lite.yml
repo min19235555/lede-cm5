@@ -99,12 +99,6 @@ jobs:
           set -o pipefail
           make -j"$(nproc)" V=s package/kernel/linux/compile 2>&1 | tee kmod.log
 
-      - name: Probe pcie_mhi (non-blocking, logs only)
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          make -j1 V=s package/wwan/driver/quectel_MHI/compile 2>&1 | tail -120 | tee pcie-mhi.log || true
-
       - name: Build
         run: |
           set -o pipefail
