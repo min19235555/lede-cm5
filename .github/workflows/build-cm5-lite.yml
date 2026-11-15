@@ -63,7 +63,13 @@ jobs:
 
       - name: Download sources
         run: |
-          make -j"$(nproc)" download
+          for i in 1 2 3; do
+            make -j"$(nproc)" download && exit 0
+            echo "download attempt $i failed, retrying in 20s"
+            sleep 20
+          done
+          echo "download failed after 3 attempts" >&2
+          exit 1
 
       - name: Probe host tools (verbose, fail fast)
         run: |
