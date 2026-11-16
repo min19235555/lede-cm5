@@ -66,17 +66,6 @@ jobs:
           echo "download failed after 3 attempts" >&2
           exit 1
 
-      - name: Probe host tools (verbose, fail fast)
-        run: |
-          set -o pipefail
-          make -j1 tools/bison/compile
-          mkdir -p staging_dir/host/share/bison
-          cp -a /usr/share/bison/. staging_dir/host/share/bison/
-          ls staging_dir/host/share/bison/m4sugar/m4sugar.m4
-          make -j1 V=s tools/elfutils/compile 2>&1 | tail -300
-          echo "=== erofs-utils ==="
-          make -j1 V=s tools/erofs-utils/compile 2>&1 | tail -200
-
       - name: Build host tools
         run: |
           set -o pipefail
