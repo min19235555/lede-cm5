@@ -540,63 +540,7 @@ define U-Boot/rock-5c-rk3588s
 endef
 
 UBOOT_TARGETS := \
-  rock-pi-s-rk3308 \
-  generic-rk3528 \
-  nanopi-zero2-rk3528 \
-  radxa-e20c-rk3528 \
-  nanopi-r3s-rk3566 \
-  panther-x2-rk3566 \
-  radxa-zero-3-rk3566 \
-  rock-3c-rk3566 \
-  bpi-r2-pro-rk3568 \
-  easepi-r1-rk3568 \
-  hinlink-h66k-rk3568 \
-  hinlink-h68k-rk3568 \
-  generic-rk3568 \
-  fastrhino-r66s-rk3568 \
-  fastrhino-r68s-rk3568 \
-  mmbox-anas3035-rk3568 \
-  nanopi-r5c-rk3568 \
-  nanopi-r5s-rk3568 \
-  photonicat-rk3568 \
-  radxa-e25-rk3568 \
-  rock-3a-rk3568 \
-  rock-3b-rk3568 \
-  station-p2-rk3568 \
-  generic-rk3576 \
-  rock-4d-rk3576 \
-  sige5-rk3576 \
-  generic-rk3588 \
-  nanopc-t6-rk3588 \
-  orangepi-5-plus-rk3588 \
-  rock5b-rk3588 \
-  sige7-rk3588 \
-  nanopi-r6c-rk3588s \
-  nanopi-r6s-rk3588s \
-  orangepi-5-rk3588s \
-  rock5a-rk3588s \
-  rock-5c-rk3588s \
-  dlfr100-rk3399 \
-  h3399pc-rk3399 \
-  fine3399-rk3399 \
-  king3399-rk3399 \
-  mpc1903-rk3399 \
-  nanopc-t4-rk3399 \
-  nanopi-r4s-rk3399 \
-  nanopi-r4se-rk3399 \
-  rock-4c-plus-rk3399 \
-  rock-pi-4-rk3399 \
-  rock-4se-rk3399 \
-  rockpro64-rk3399 \
-  sv901-eaio-rk3399 \
-  guangmiao-g4c-rk3399 \
-  xiaobao-nas-v1-rk3399 \
-  nanopi-r2c-rk3328 \
-  nanopi-r2c-plus-rk3328 \
-  nanopi-r2s-rk3328 \
-  nanopi-r2s-plus-rk3328 \
-  orangepi-r1-plus-rk3328 \
-  orangepi-r1-plus-lts-rk3328
+  generic-rk3588
 
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
