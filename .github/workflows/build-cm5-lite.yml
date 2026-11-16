@@ -37,8 +37,6 @@ jobs:
 
       - name: Work around incomplete host bison data
         run: |
-          # LEDE's staged bison ships without share/bison (m4sugar etc.), which
-          # breaks host elfutils. The runner's bison is the same 3.8.2.
           ls /usr/share/bison/m4sugar/m4sugar.m4
           echo "BISON_PKGDATADIR=/usr/share/bison" >> $GITHUB_ENV
 
@@ -74,9 +72,6 @@ jobs:
       - name: Probe host tools (verbose, fail fast)
         run: |
           set -o pipefail
-          # LEDE's staged bison is installed without share/bison, and the build
-          # system overrides BISON_PKGDATADIR with that path. Seed the data from
-          # the runner's bison (same 3.8.2) before anything needs it.
           make -j1 tools/bison/compile
           mkdir -p staging_dir/host/share/bison
           cp -a /usr/share/bison/. staging_dir/host/share/bison/
@@ -105,10 +100,24 @@ jobs:
           set -o pipefail
           make -j"$(nproc)" V=s package/kernel/linux/compile 2>&1 | tee kmod.log
 
-      - name: Build
+      - name: Build packages
         run: |
           set -o pipefail
-          make -j"$(nproc)" 2>&1 | tee build.log
+          make -j"$(nproc)" package/compile 2>&1 | tee packages.log
+
+      - name: Probe target/linux install (verbose)
+        run: |
+          set -o pipefail
+          echo '=== U-Boot binaries present? ==='
+          ls -la staging_dir/target-aarch64_generic_musl/ 2>&1 | head -20 || true
+          ls -la staging_dir/target-aarch64_generic_musl/image/ 2>&1 || echo "no image/ dir"
+          echo '=== KDIR dtb check ==='
+          ls -la build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/ 2>&1 | head -20
+          find build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/ -name '*.dtb' 2>/dev/null
+          echo '=== BOOT_SCRIPT files ==='
+          ls -la target/linux/rockchip/image/*.bootscript 2>&1
+          echo '=== Running V=s target/linux install ==='
+          make -j1 V=s target/linux install 2>&1 | tee target-install.log
 
       - name: Upload firmware
         if: always()
@@ -132,6 +141,6 @@ jobs:
             toolchain.log
             target-linux.log
             kmod.log
-            package-install.log
-            build.log
+            packages.log
+            target-install.log
           if-no-files-found: warn
