@@ -66,10 +66,10 @@ jobs:
           echo "download failed after 3 attempts" >&2
           exit 1
 
-      - name: Build host tools
+      - name: Build host tools (verbose)
         run: |
           set -o pipefail
-          make -j"$(nproc)" tools/compile 2>&1 | tee tools.log
+          make -j"$(nproc)" V=s tools/compile 2>&1 | tee tools.log
 
       - name: Build toolchain
         run: |
