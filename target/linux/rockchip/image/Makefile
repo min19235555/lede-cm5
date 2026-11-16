@@ -91,6 +91,8 @@ define Device/Default
   PROFILES := Default
   KERNEL := kernel-bin
   IMAGES := sysupgrade.img.gz
+  # CRITICAL: the IMAGE pipeline definition. Without this, no .img.gz is produced.
+  IMAGE/sysupgrade.img.gz = boot-common | boot-script $$(BOOT_SCRIPT) | $$(BOOT_FLOW) | gzip | append-metadata
   DEVICE_DTS_DIR = $$(DTS_DIR)/rockchip
   DEVICE_DTS = $$(SOC)-$(lastword $(subst _, ,$(1)))
 endef
