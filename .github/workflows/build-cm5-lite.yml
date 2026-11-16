@@ -100,11 +100,6 @@ jobs:
           set -o pipefail
           make -j"$(nproc)" V=s target/linux/compile 2>&1 | tee target-linux.log
 
-      - name: Install target (verbose, fail fast)
-        run: |
-          set -o pipefail
-          make -j1 V=s target/linux/install 2>&1 | tail -200
-
       - name: Compile kernel modules (verbose)
         run: |
           set -o pipefail
