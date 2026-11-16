@@ -61,20 +61,23 @@ jobs:
           echo "download failed after 3 attempts" >&2
           exit 1
 
+      - name: Pre-stage bison data for parallel tools build
+        run: |
+          # tools/compile builds bison and elfutils in parallel.
+          # elfutils calls bison to compile libcpu/i386_parse.y,
+          # but bison's install step (which puts m4sugar data files
+          # into staging_dir/host/share/bison/) hasn't run yet.
+          # Force bison to build+install its data files FIRST, then
+          # copy system bison data to be absolutely safe.
+          make -j1 V=s tools/bison/compile 2>&1 | tail -20
+          mkdir -p staging_dir/host/share/bison
+          cp -a /usr/share/bison/. staging_dir/host/share/bison/
+          ls staging_dir/host/share/bison/m4sugar/m4sugar.m4
+
       - name: Build host tools (verbose)
         run: |
           set -o pipefail
           make -j"$(nproc)" V=s tools/compile 2>&1 | tee tools.log
-
-      - name: Ensure bison m4sugar macros for elfutils
-        run: |
-          # elfutils 0.196 runs host bison to compile libcpu/i386_parse.y
-          # staging_dir/host/bin/bison looks for m4sugar in its own data
-          # dir which tools/bison/compile does NOT populate.  Copy the
-          # system bison data files over so elfutils can find them.
-          mkdir -p staging_dir/host/share/bison
-          cp -a /usr/share/bison/. staging_dir/host/share/bison/
-          ls staging_dir/host/share/bison/m4sugar/m4sugar.m4
 
       - name: Build toolchain
         run: |
@@ -94,7 +97,6 @@ jobs:
       - name: Compile rkbin blobs + ARM TF-A (prerequisite for U-Boot)
         run: |
           set -o pipefail
-          # Multi-variant packages: build rk3588 variant explicitly
           make -j"$(nproc)" V=s package/boot/rockchip-rkbin-rk3588/compile 2>&1 | tail -30
           make -j"$(nproc)" V=s package/boot/arm-trusted-firmware-rockchip-rk3588/compile 2>&1 | tail -30
           echo '=== staging_dir/image contents ==='
@@ -111,8 +113,6 @@ jobs:
       - name: Compile U-Boot (verbose)
         run: |
           set -o pipefail
-          # Builds generic-rk3588-idbloader.img + generic-rk3588-u-boot.itb
-          # which pine64-img needs in staging_dir/image/
           make -j"$(nproc)" V=s package/boot/uboot-rockchip/compile 2>&1 | tee uboot.log
           echo '=== U-Boot artifacts ==='
           ls -la staging_dir/target-aarch64_generic_musl/image/ | grep -E "generic-rk3588|idbloader|u-boot"
