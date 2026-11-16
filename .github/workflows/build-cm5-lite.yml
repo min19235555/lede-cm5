@@ -51,9 +51,6 @@ jobs:
           CONFIG_TARGET_KERNEL_PARTSIZE=64
           CONFIG_TARGET_ROOTFS_PARTSIZE=512
           CONFIG_PACKAGE_luci=y
-          # LEDE's in-tree Quectel PCIe MHI driver does not build against 6.18.
-          # Keep it out of this image; probe its errors separately below.
-          # CONFIG_PACKAGE_kmod-pcie_mhi is not set
           EOF
           make defconfig
           echo '--- selected device ---'
@@ -100,24 +97,24 @@ jobs:
           set -o pipefail
           make -j"$(nproc)" V=s package/kernel/linux/compile 2>&1 | tee kmod.log
 
+      - name: Compile U-Boot (verbose)
+        run: |
+          set -o pipefail
+          # Builds generic-rk3588-idbloader.img + generic-rk3588-u-boot.itb
+          # which pine64-img needs in staging_dir/image/
+          make -j"$(nproc)" V=s package/boot/uboot-rockchip/compile 2>&1 | tee uboot.log
+          echo '=== U-Boot artifacts ==='
+          ls -la staging_dir/target-aarch64_generic_musl/image/ | grep -E "generic-rk3588|idbloader|u-boot"
+
       - name: Build packages
         run: |
           set -o pipefail
           make -j"$(nproc)" package/compile 2>&1 | tee packages.log
 
-      - name: Probe target/linux install (verbose)
+      - name: Install target (verbose)
         run: |
           set -o pipefail
-          echo '=== U-Boot binaries present? ==='
-          ls -la staging_dir/target-aarch64_generic_musl/ 2>&1 | head -20 || true
-          ls -la staging_dir/target-aarch64_generic_musl/image/ 2>&1 || echo "no image/ dir"
-          echo '=== KDIR dtb check ==='
-          ls -la build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/ 2>&1 | head -20
-          find build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/ -name '*.dtb' 2>/dev/null
-          echo '=== BOOT_SCRIPT files ==='
-          ls -la target/linux/rockchip/image/*.bootscript 2>&1
-          echo '=== Running V=s target/linux install ==='
-          make -j1 V=s target/linux install 2>&1 | tee target-install.log
+          make -j"$(nproc)" V=s target/linux/install 2>&1 | tee target-install.log
 
       - name: Upload firmware
         if: always()
@@ -141,6 +138,7 @@ jobs:
             toolchain.log
             target-linux.log
             kmod.log
+            uboot.log
             packages.log
             target-install.log
           if-no-files-found: warn
