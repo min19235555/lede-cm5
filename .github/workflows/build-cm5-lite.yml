@@ -97,6 +97,24 @@ jobs:
           set -o pipefail
           make -j"$(nproc)" V=s package/kernel/linux/compile 2>&1 | tee kmod.log
 
+      - name: Compile rkbin blobs + ARM TF-A (prerequisite for U-Boot)
+        run: |
+          set -o pipefail
+          # rkbin provides DDR TPL blobs for all SoC variants
+          make -j"$(nproc)" V=s package/boot/rockchip-rkbin/compile 2>&1 | tail -50
+          # trusted-firmware-a provides ATF (BL31) elf files
+          make -j"$(nproc)" V=s package/boot/arm-trusted-firmware-rockchip/compile 2>&1 | tail -50
+          echo '=== staging_dir/image contents ==='
+          ls -la staging_dir/target-aarch64_generic_musl/image/
+          echo '=== expected rk3588 files ==='
+          for f in rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.18.bin rk3588_bl31.elf rk3588_bl31_v1.47.elf; do
+            if [ -f "staging_dir/target-aarch64_generic_musl/image/$f" ]; then
+              echo "  OK: $f ($(du -h staging_dir/target-aarch64_generic_musl/image/$f | cut -f1))"
+            else
+              echo "  MISSING: $f"
+            fi
+          done
+
       - name: Compile U-Boot (verbose)
         run: |
           set -o pipefail
