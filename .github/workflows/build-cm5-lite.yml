@@ -35,11 +35,6 @@ jobs:
             zlib1g-dev file wget ccache libelf-dev \
             liblzma-dev liblz4-dev uuid-dev libzstd-dev
 
-      - name: Work around incomplete host bison data
-        run: |
-          ls /usr/share/bison/m4sugar/m4sugar.m4
-          echo "BISON_PKGDATADIR=/usr/share/bison" >> $GITHUB_ENV
-
       - name: Configure firmware
         run: |
           ./scripts/feeds update -a
@@ -70,6 +65,16 @@ jobs:
         run: |
           set -o pipefail
           make -j"$(nproc)" V=s tools/compile 2>&1 | tee tools.log
+
+      - name: Ensure bison m4sugar macros for elfutils
+        run: |
+          # elfutils 0.196 runs host bison to compile libcpu/i386_parse.y
+          # staging_dir/host/bin/bison looks for m4sugar in its own data
+          # dir which tools/bison/compile does NOT populate.  Copy the
+          # system bison data files over so elfutils can find them.
+          mkdir -p staging_dir/host/share/bison
+          cp -a /usr/share/bison/. staging_dir/host/share/bison/
+          ls staging_dir/host/share/bison/m4sugar/m4sugar.m4
 
       - name: Build toolchain
         run: |
